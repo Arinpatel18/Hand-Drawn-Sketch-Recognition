@@ -1,0 +1,12 @@
+Flask
+gunicorn
+joblib
+numpy
+pandas
+gdown
+matplotlib
+scikit-learn
+tqdm
+torch
+torchvision
+pillow
