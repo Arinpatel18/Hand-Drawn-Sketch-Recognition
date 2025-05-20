@@ -69,7 +69,7 @@ To run this project, clone the repository and install the required dependencies:
 
 bash
 
-git clone https://github.com/VivekanandaMudelli/hand_drawn_sketch_recognition.git
+git clone https://github.com/Arinpatel18/Hand-Drawn-Sketch-Recognition.git
 
 cd hand_drawn_sketch_recognition
 
