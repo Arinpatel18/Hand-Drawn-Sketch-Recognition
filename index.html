@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hand-Drawn Sketch Recognition | Project Summary</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #2d3436;
+      line-height: 1.7;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 5px;
+      margin-top: 50px;
+      color: #34495e;
+    }
+
+    h3 {
+      color: #2c3e50;
+      margin-top: 30px;
+    }
+
+    p, ul {
+      font-size: 16px;
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .note {
+      font-style: italic;
+      color: #555;
+    }
+
+    footer {
+      background-color: #ecf0f1;
+      padding: 20px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Hand-Drawn Sketch Recognition</h1>
+  <p>A Machine Learning Approach to Classify Human Sketches</p>
+  <p><strong>GitHub:</strong> <a href="https://github.com/VivekanandaMudelli/hand_drawn_sketch_recognition" target="_blank" style="color:#1abc9c;">https://github.com/VivekanandaMudelli/hand_drawn_sketch_recognition</a></p>
+</header>
+
+<div class="container">
+  <h2>1. Introduction</h2>
+  <p>This project aims to classify hand-drawn sketches into 250 categories using various machine learning techniques. The dataset consists of 20,180 images, each depicting objects like zebras, planes, shovels, etc., with high-dimensional resolution (1111x1111). Due to the abstract nature of sketches, traditional feature extraction and deep learning methods are explored to interpret these minimalistic drawings effectively.</p>
+
+  <h2>2. Dataset & Feature Extraction</h2>
+  <p><strong>Dataset:</strong> QuickDraw-inspired dataset with ~80-90 images per class. Features are extracted from image pixels.</p>
+
+  <p><strong>Challenges:</strong> High dimensionality makes training on raw pixels inefficient (over 1.2M features).</p>
+
+  <p><strong>Techniques Used:</strong></p>
+  <ul>
+    <li><strong>HOG (Histogram of Oriented Gradients):</strong> Captures edge orientation, resized to 128×128, yielding 8000 features.</li>
+    <li><strong>CNN (ResNet-based):</strong> Used pretrained layers to extract deep features from the full image (2048-dim vectors).</li>
+    <li><strong>PCA:</strong> Dimensionality reduction to ensure compatibility with RAM and improve model performance.</li>
+  </ul>
+
+  <h2>3. Models Used & Their Working</h2>
+
+  <h3>Decision Tree</h3>
+  <p>A supervised model that splits the dataset based on entropy and information gain. Nodes are chosen to reduce uncertainty in the class labels. We implemented both a custom version and used Scikit-learn’s built-in <code>DecisionTreeClassifier</code>.</p>
+
+  <h3>Logistic Regression</h3>
+  <p>Uses a sigmoid activation to estimate the probability of a class. We used multiclass softmax extension and gradient descent for training. Particularly effective when feature dimensions are reduced (e.g., via PCA).</p>
+
+  <h3>K-Nearest Neighbors (KNN)</h3>
+  <p>KNN classifies a sample by majority voting from its <code>K</code> nearest points in the training set (Euclidean distance). It does not learn any model parameters but is effective for small and well-distributed datasets.</p>
+
+  <h3>Support Vector Machine (SVM)</h3>
+  <p>Linear SVM is used with the One-vs-Rest approach for multi-class classification. We trained separate classifiers for each class and selected the highest-confidence output. PCA-preprocessed features enhanced efficiency.</p>
+
+  <h3>Bayesian Classifier</h3>
+  <p>Based on Gaussian distribution assumptions for each class. It uses Bayes’ theorem to compute posterior probabilities and selects the class with the highest value. Regularization was used to avoid singular covariance matrices.</p>
+
+  <h3>Artificial Neural Network (ANN)</h3>
+  <p>Multi-layer perceptron with:</p>
+  <ul>
+    <li>Input Layer: 2048 neurons (CNN features)</li>
+    <li>Hidden Layers: Two layers (512, 256 neurons) using ReLU</li>
+    <li>Output Layer: 250 neurons with Softmax for multi-class classification</li>
+  </ul>
+  <p>Trained with gradient descent and cross-entropy loss for 60 epochs. This model showed the best generalization among all techniques.</p>
+
+  <h2>4. Results Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Features Used</th>
+        <th>Accuracy (%)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Decision Tree</td>
+        <td>CNN + PCA</td>
+        <td>10.68 (custom), 10.23 (sklearn)</td>
+      </tr>
+      <tr>
+        <td>K-Means Clustering</td>
+        <td>PCA / CNN</td>
+        <td>11.40 / 5.00</td>
+      </tr>
+      <tr>
+        <td>Logistic Regression</td>
+        <td>HOG + PCA / CNN</td>
+        <td>21.78 / 62.32</td>
+      </tr>
+      <tr>
+        <td>KNN</td>
+        <td>HOG + PCA / CNN / CNN + PCA</td>
+        <td>30.13 / 39.88 / 41.54</td>
+      </tr>
+      <tr>
+        <td>SVM</td>
+        <td>CNN / CNN + PCA</td>
+        <td>56.50 / 50.14</td>
+      </tr>
+      <tr>
+        <td>Bayesian Classifier</td>
+        <td>HOG + PCA / CNN / CNN + PCA</td>
+        <td>38.82 / 53.87 / 51.38</td>
+      </tr>
+      <tr>
+        <td>ANN</td>
+        <td>CNN</td>
+        <td>Train: 91.81, Test: 56.13</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note">Note: CNN features consistently outperformed HOG + PCA, confirming the strength of deep features.</p>
+
+  <h2>5. Conclusion</h2>
+  <p>This project demonstrates how combining traditional and deep learning techniques can improve hand-drawn sketch recognition. While shallow models performed moderately, the CNN-based ANN and SVM models showed the best results. Future work could explore end-to-end deep learning models, data augmentation, or transformer-based visual architectures.</p>
+
+</div>
+
+<footer>
+  <p>View full code and documentation on <a href="https://github.com/VivekanandaMudelli/hand_drawn_sketch_recognition" target="_blank">GitHub</a></p>
+  <p>&copy; 2025 - Hand-Drawn Sketch Recognition | Built by Arin, Ganesh, Vivekananda, Akshay, Yashwanth & Jagadeesh</p>
+</footer>
+
+</body>
+</html>
